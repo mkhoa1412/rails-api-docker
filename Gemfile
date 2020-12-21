@@ -46,6 +46,9 @@ gem 'mini-apivore'
 #Catch unsafe migrations 
 gem 'strong_migrations'
 
+# keep the database consistency with better performance. only ActiveRecord.
+gem 'database_validations'
+
 #A performance dashboard for Postgres
 gem 'pghero'
 gem 'pg_query', '>= 0.9.0'
@@ -72,8 +75,15 @@ group :development, :test do
 
   # This provides better test output
   gem "minitest-reporters"
+end
 
+group :development do
   gem 'scout_apm'
+   gem 'pry-rails'
+
+  #check the consistency of the database constraints
+  gem 'database_consistency',  require: false
+ 
 end
 
 group :test do
