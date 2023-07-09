@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "2.7.2"
+ruby "2.7.5"
 
 ## Rails should go at the top—it drives everything
 gem "rails", "~> 6.1.0"

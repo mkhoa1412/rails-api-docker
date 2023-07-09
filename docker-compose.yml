@@ -1,19 +1,22 @@
 version: '2.7'
 
 services:
-  app: &app
+  app:
+    &app
+    platform: linux/x86_64
     build:
       context: .dockerdev
       dockerfile: Dockerfile
       args:
-        RUBY_VERSION: '2.7.2'
+        RUBY_VERSION: '2.7.5'
         PG_MAJOR: '11'
         BUNDLER_VERSION: '2.0.2'
-    image: example-dev:1.0.0
+    image: good_night:1.0.0
     tmpfs:
       - /tmp
 
-  backend: &backend
+  backend:
+    &backend
     <<: *app
     stdin_open: true
     tty: true
@@ -23,16 +26,14 @@ services:
       - bundle:/usr/local/bundle
       - packs:/app/public/packs
       - .dockerdev/.psqlrc:/root/.psqlrc:ro
+    env_file: '.env'
     environment:
       - RAILS_ENV=${RAILS_ENV:-development}
-      - SCOUT_DEV_TRACE=true
-      - REDIS_URL=redis://redis:6379/
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432
+      - MALLOC_ARENA_MAX=${MALLOC_ARENA_MAX:-2}
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-2}
       - BOOTSNAP_CACHE_DIR=/usr/local/bundle/_bootsnap
-      - MALLOC_ARENA_MAX=2
-      - WEB_CONCURRENCY=2
-      - HISTFILE=/app/log/.bash_history
-      - PSQL_HISTFILE=/app/log/.psql_history
+      - HISTFILE=/app/pg_log/.bash_history
+      - PSQL_HISTFILE=/app/pg_log/.psql_history
       - EDITOR=vi
     depends_on:
       postgres:
@@ -43,28 +44,28 @@ services:
   runner:
     <<: *backend
     command: /bin/bash
-    ports:
-      - '3000:3000'
-      - '3002:3002'
 
   rails:
     <<: *backend
-    command: bundle exec rails server -b 0.0.0.0
+    restart: always
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     ports:
       - '3000:3000'
 
   sidekiq:
     <<: *backend
+    restart: always
     command: bundle exec sidekiq -C config/sidekiq.yml
 
   postgres:
-    image: postgres:11.1
+    image: postgres:12.1
+    restart: always
     volumes:
       - .psqlrc:/root/.psqlrc:ro
       - postgres:/var/lib/postgresql/data
-      - ./log:/root/log:cached
+      - ./pg_log:/root/pg_log:cached
     environment:
-      - PSQL_HISTFILE=/root/log/.psql_history
+      - PSQL_HISTFILE=/root/pg_log/.psql_history
     ports:
       - 5432
     healthcheck:
@@ -72,7 +73,8 @@ services:
       interval: 5s
 
   redis:
-    image: redis:5.0-alpine
+    image: redis:6.2-alpine
+    restart: always
     volumes:
       - redis:/data
     ports:

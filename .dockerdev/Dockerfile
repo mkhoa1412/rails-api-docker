@@ -1,6 +1,6 @@
 ARG RUBY_VERSION
 # See explanation below
-FROM ruby:$RUBY_VERSION-slim-buster
+FROM ruby:$RUBY_VERSION
 
 ARG PG_MAJOR
 ARG BUNDLER_VERSION
@@ -8,11 +8,11 @@ ARG BUNDLER_VERSION
 # Common dependencies
 RUN apt-get update -qq \
   &&  apt-get install -yq --no-install-recommends \
-    build-essential \
-    gnupg2 \
-    curl \
-    less \
-    git \
+  build-essential \
+  gnupg2 \
+  curl \
+  less \
+  git \
   && apt-get clean \
   && rm -rf /var/cache/apt/archives/* \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
@@ -27,13 +27,13 @@ RUN curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 COPY Aptfile /tmp/Aptfile
 
 RUN apt-get update -qq && \
-    apt-get install -yq --no-install-recommends \
-    libpq-dev \
-    postgresql-client-$PG_MAJOR \
-    $(cat /tmp/Aptfile | xargs) && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    truncate -s 0 /var/log/*log
+  apt-get install -yq --no-install-recommends \
+  libpq-dev \
+  postgresql-client-$PG_MAJOR \
+  $(cat /tmp/Aptfile | xargs) && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+  truncate -s 0 /var/log/*log
 
 # Configure bundler
 ENV LANG=C.UTF-8 \
@@ -48,7 +48,7 @@ ENV LANG=C.UTF-8 \
 
 # Upgrade RubyGems and install required Bundler version
 RUN gem update --system && \
-    gem install bundler:$BUNDLER_VERSION
+  gem install bundler:$BUNDLER_VERSION
 
 # Run binstubs without prefixing with `bin/` or `bundle exec`
 ENV PATH /app/bin:$PATH

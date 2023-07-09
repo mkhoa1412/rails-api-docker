@@ -1,12 +1,10 @@
-# my_app
+# Good night app
 
-This app does: Rails api
-* SQL-based schema management so you can use any feature of Postgres you like
-* Does Not Business Logic in Active Records. Use A simple base ApplicationService and a service class generator bin/rails g service MyThing to encourage putting code in app/services
-* All datetime fields in migrations uses timestamp with time zone which is the proper type in Postgres.
-* A method confidence_check to allow validating assumptions in tests separate from asserting code behavior.
-* A method not_implemented! to allow skipping a test you have not implemented
-* A test to lint all your factories
+“good night” application to let users track when do they go to bed and when do they wake up.
+We require some restful APIS to achieve the following:
+1. Clock In operation, and return all clocked-in times, ordered by created time.
+2. Users can follow and unfollow other users.
+3. See the sleep records of a user’s All following users’ sleep records. from the previous week, which are sorted based on the duration of All friends sleep length.
 
 ## Provisioning
 
@@ -34,6 +32,16 @@ contains all the tests and checks for the app
 
 `tmp/test.log` will use the production logging format
     *not* the development one.
+
+## Development Rules
+
+This app does: Rails api
+* SQL-based schema management so you can use any feature of Postgres you like
+* Does Not Business Logic in Active Records. Use A simple base ApplicationService and a service class generator bin/rails g service MyThing to encourage putting code in app/services
+* All datetime fields in migrations uses timestamp with time zone which is the proper type in Postgres.
+* A method confidence_check to allow validating assumptions in tests separate from asserting code behavior.
+* A method not_implemented! to allow skipping a test you have not implemented
+* A test to lint all your factories
 
 ## Others
 ```
