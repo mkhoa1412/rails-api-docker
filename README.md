@@ -1,10 +1,5 @@
-# Good night app
+# My ap
 
-“good night” application to let users track when do they go to bed and when do they wake up.
-We require some restful APIS to achieve the following:
-1. Clock In operation, and return all clocked-in times, ordered by created time.
-2. Users can follow and unfollow other users.
-3. See the sleep records of a user’s All following users’ sleep records. from the previous week, which are sorted based on the duration of All friends sleep length.
 
 ## Provisioning
 
